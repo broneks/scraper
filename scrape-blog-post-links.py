@@ -56,7 +56,7 @@ async def main():
     }
     output['blog_links'] = await get_blog_links_for_pages(page_start, page_end)
 
-    with open(f'./the-blonde-abroad-blog-links.json', 'w') as file:
+    with open(f'./output/the-blonde-abroad-blog-links.json', 'w') as file:
         json.dump(output, file, indent=4, ensure_ascii=False)
         print('Done!')
 
