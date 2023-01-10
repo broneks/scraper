@@ -44,6 +44,7 @@ async def get_blog_links_for_pages(start, end):
         for page in range(start, end + 1):
             page_url = get_page_url(page)
             tasks.append(asyncio.ensure_future(get_blog_links_for_page(session, page_url)))
+            await asyncio.sleep(1) # just to be nice
 
         links = await asyncio.gather(*tasks)
 
