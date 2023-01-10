@@ -11,7 +11,7 @@ page_end = 5
 def get_page_url(page):
     return '%s/page/%s' % (base_url, page)
 
-async def fetch_blog_page(session, url):
+async def fetch_html(session, url):
     async with session.get(url) as response:
         print(f'fetched: {url}')
         return await response.text()
@@ -28,7 +28,7 @@ def scrape_page_blog_links(html):
     return links
 
 async def get_blog_links_for_page(session, url):
-    html = await fetch_blog_page(session, url)
+    html = await fetch_html(session, url)
     links = scrape_page_blog_links(html)
 
     return links
