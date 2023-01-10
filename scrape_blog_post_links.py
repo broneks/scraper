@@ -60,4 +60,5 @@ async def main():
         json.dump(output, file, indent=4, ensure_ascii=False)
         print('Done!')
 
-asyncio.run(main())
+def run():
+    asyncio.run(main())
