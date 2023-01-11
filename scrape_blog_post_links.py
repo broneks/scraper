@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 base_url = 'https://www.theblondeabroad.com/travel-blog'
 page_start = 1
-page_end = 5
+page_end = 500
 
 def get_page_url(page):
     return '%s/page/%s' % (base_url, page)
@@ -62,5 +62,4 @@ async def main():
 
     write_to_file(output)
 
-def run():
-    asyncio.run(main())
+asyncio.run(main())

@@ -43,7 +43,11 @@ def write_to_file(output):
         json.dump(output, file, indent=2, ensure_ascii=False)
 
 async def main():
-    f = open('./output/the-blonde-abroad-blog-links.json')
+    try:
+        f = open('./output/the-blonde-abroad-blog-links.json')
+    except:
+        print('blog links file does not exist.')
+
     blog_links_json = json.load(f)
 
     output = {
@@ -57,5 +61,4 @@ async def main():
 
     write_to_file(output)
 
-def run():
-    asyncio.run(main())
+asyncio.run(main())
