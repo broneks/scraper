@@ -9,30 +9,56 @@ async def fetch_html(session, url):
         print(f'fetched: {url}')
         return await response.text()
 
+def process_text(text):
+    if not text:
+        return text
+
+    return text.strip().replace('\u2019', "'").replace('\u00a0', ' ')
+
+def get_sections(soup, html):
+    sections = []
+    stats = {}
+
+    def add_section(name, content):
+        stats[name] = stats.get(name, 0) + 1
+        sections.append([name, process_text(content)])
+
+    for node in soup.find('article').find_all(recursive=False):
+        try:
+            text = ''.join(node.strings)
+
+            if node.name == 'div' and node.contents[0]:
+                child = node.contents[0]
+                add_section(child.name, child['src'])
+            elif text and text != '\n\n':
+                add_section(node.name, text)
+        except:
+            pass
+
+    return sections, stats
+
 def scrape_post_content(html, url):
     soup = BeautifulSoup(html, 'html.parser')
 
     content = {
         'url': url,
+        'author': '',
+        'stats': {},
         'title': '',
         'description': '',
         'sections': [],
     }
 
-    content['title'] = soup.find('h1').string
+    try:
+        content['author'] = process_text(soup.select('.avatar__info')[0].get_text())
+    except:
+        pass
 
-    content['description'] = soup.select('.article__desc')[0].get_text()
+    content['title'] = process_text(soup.find('h1').string)
 
-    for para in soup.select('.article p'):
-    for node in soup.findChildren('.article', recursive=False)
-        try:
-            text = ''.join(node.strings)
+    content['description'] = process_text(soup.select('.article__desc')[0].get_text())
 
-            if text and text != '\n\n':
-                content['sections'].append(text)
-        except:
-            print('No string content for:', node.name)
-
+    content['sections'], content['stats'] = get_sections(soup, html)
 
     return content
 
@@ -69,11 +95,4 @@ async def main():
 
     write_to_file(output)
 
-# asyncio.run(main())
-
-async def test():
-    content = await get_post_content('https://www.intercom.com/help/en/articles/323-intercom-s-inbox-explained')
-
-    print(json.dumps(content, indent=4))
-
-asyncio.run(test())
+asyncio.run(main())
